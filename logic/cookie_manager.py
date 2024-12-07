@@ -2,6 +2,9 @@ from streamlit_cookies_controller import CookieController
 import time
 
 
+controller = CookieController()
+
+
 def set_cookie(key, value):
     controller = CookieController()
     controller.set(key, value)
@@ -14,7 +17,7 @@ def get_all_cookies():
 
 
 def get_cookie(key):
-    controller = CookieController()
+    # controller = CookieController()
     return controller.get(key)
 
 
