@@ -6,6 +6,7 @@ import sqlite3
 import streamlit as st
 import streamlit.components.v1 as components
 from gtts import gTTS
+from openai import OpenAI
 
 
 DATA_DIR = 'disk/data'
@@ -493,6 +494,8 @@ class ChatbotCanvas:
 
         self.bio()
         self.canvas()
+
+        st.session_state.openai_client = OpenAI(api_key=get_api_key(st.session_state.user_id))
 
     def bio(self):
         st.title(self.name)

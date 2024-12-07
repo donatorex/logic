@@ -18,7 +18,7 @@ def change_api_key():
     new_api_key = st.text_input("Введите новый API-ключ", type="password")
     checkbox = st.checkbox("Подтвердите, что вы ввели правильный ключ")
 
-    button_visible = new_api_key != '' and checkbox
+    button_visible = new_api_key != '' and new_api_key is not None and checkbox
 
     if st.button("Сохранить", disabled=not button_visible):
 

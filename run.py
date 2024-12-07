@@ -10,18 +10,18 @@ from streamlit_lottie import st_lottie
 from logic import get_cookie, get_user_id, get_api_key, authorization
 
 
+st.set_page_config(
+    page_title="Logic",
+    layout="centered"
+)
+
+
 DATA_DIR = 'disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
 
 # Disable HTTP request logging
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
-
-
-st.set_page_config(
-    page_title="Logic",
-    layout="centered"
-)
 
 
 cookies = st.context.cookies
@@ -161,7 +161,7 @@ if is_logged_in:
     if 'user_id' not in st.session_state:
         st.session_state.user_id = get_user_id(cookie)
     if 'openai_client' not in st.session_state:
-        st.session_state.openai_client = OpenAI(api_key=get_api_key(st.session_state.user_id))
+        st.session_state.openai_client = None
     st.logo('assets/logo_icon.png')
     pg = st.navigation(
         [
