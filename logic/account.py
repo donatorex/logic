@@ -33,8 +33,7 @@ def change_api_key():
         finally:
             cur.close()
             conn.close()
-
-        st.rerun()
+            st.rerun()
 
 
 def get_statistics():

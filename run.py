@@ -10,10 +10,10 @@ from streamlit_lottie import st_lottie
 from logic import get_cookie, get_user_id, get_api_key, authorization
 
 
-st.set_page_config(
-    page_title="Logic",
-    layout="centered"
-)
+# st.set_page_config(
+#     page_title="Logic",
+#     layout="centered"
+# )
 
 
 DATA_DIR = 'disk/data'
