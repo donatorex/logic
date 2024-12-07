@@ -91,6 +91,7 @@ def is_logged_in():
     # return get_cookie("logic_user_token") is not None
 
     if cookie_id := get_cookie("ajs_anonymous_id") is None:
+        print("Cookie not found")
         return cookie_id, False
 
     conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
