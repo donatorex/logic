@@ -88,7 +88,23 @@ def create_database():
 
 
 def is_logged_in():
-    return get_cookie("logic_user_token") is not None
+    # return get_cookie("logic_user_token") is not None
+
+    if cookie_id := get_cookie("ajs_anonymous_id") is None:
+        return cookie_id, False
+
+    conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT 1 FROM users WHERE user_token = ? LIMIT 1", (cookie_id,))
+        result = cur.fetchone()
+        return cookie_id, result is not None
+    except sqlite3.Error as e:
+        print(f"Error while checking login status: {e}")
+        return cookie_id, False
+    finally:
+        cur.close()
+        conn.close()
 
 
 @st.cache_data
@@ -134,9 +150,11 @@ def start_page():
 if not os.path.exists(os.path.join(DATA_DIR, 'logic.db')):
     create_database()
 
-if is_logged_in():
+cookie, is_logged_in = is_logged_in()
+
+if is_logged_in:
     if 'user_id' not in st.session_state:
-        st.session_state.user_id = get_user_id(get_cookie("logic_user_token"))
+        st.session_state.user_id = get_user_id(cookie)
     if 'openai_client' not in st.session_state:
         st.session_state.openai_client = OpenAI(api_key=get_api_key(st.session_state.user_id))
     st.logo('assets/logo_icon.png')

@@ -65,6 +65,12 @@ def change_avatar():
     pass
 
 
+def change_password():
+    st.toast('Функция изменения пароля находится в разработке и будет представлена в следующих версиях! Если Вы '
+             'забыли пароль - выйдите из аккаунта и нажмите "Забыли пароль" в окне авторизации.', icon="🛠️")
+    pass
+
+
 @st.dialog("Удаление аккаунта")
 def delete_account():
     st.text("""
@@ -78,7 +84,7 @@ def delete_account():
     button_visible = st.session_state.delete_account_checkbox_1 and st.session_state.delete_account_checkbox_2
 
     if st.button("Удалить аккаунт", type="primary", disabled=not button_visible):
-        remove_user_cookies()
+        # remove_user_cookies()
         with st.spinner("Удаляем Ваш аккаунт..."):
             time.sleep(1)
             conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
@@ -103,13 +109,12 @@ def delete_account():
 
 col1, col2 = st.columns([1, 2], vertical_alignment='center')
 avatar = col1.image('assets/user_avatar.png', width=250)
-with col2:
-    st.button('', icon=":material/inbox_customize:", on_click=change_avatar)
+col2.button('', icon=":material/inbox_customize:", on_click=change_avatar)
 
 title = st.empty()
 st.divider()
 
-user_info = get_account_info(st.session_state.cookies['logic_user_token'])
+user_info = get_account_info(st.session_state.cookies['ajs_anonymous_id'])
 
 if user_info:
 
@@ -135,7 +140,7 @@ if user_info:
     with st.container():
         col1, col2 = st.columns([8, 1])
         col1.text_input(label='API_KEY', value=password, type="password", disabled=True, label_visibility='collapsed')
-        col2.button("", icon=':material/edit:', key='change_password')
+        col2.button("", icon=':material/edit:', key='change_password', on_click=change_password)
 
     st.caption('OpenAI API key:')
     with st.container():
@@ -146,12 +151,21 @@ if user_info:
     st.write("")
 
     if st.button("Выйти из аккаунта", icon=":material/logout:", key='logout'):
-        remove_user_cookies()
-        st.session_state.user_id = None
-        st.session_state.success_logout = True
+        # remove_user_cookies()
         with st.spinner("Выход..."):
-            time.sleep(1)
-        st.rerun()
+            conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
+            cur = conn.cursor()
+            try:
+                cur.execute("UPDATE users SET user_token = NULL WHERE user_id = ?", (st.session_state.user_id,))
+                conn.commit()
+                st.session_state.user_id = None
+                st.session_state.success_logout = True
+            except sqlite3.Error as e:
+                print(f"Error while logout: {e}")
+            finally:
+                cur.close()
+                conn.close()
+                st.rerun()
 
     if st.button("Удалить аккаунт", type='primary', icon=":material/delete:", key='acc_delete'):
         delete_account()

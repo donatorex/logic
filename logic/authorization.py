@@ -186,9 +186,9 @@ def login(login_input, password):
         cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
         user = cur.fetchone()
         if user:
-            set_cookie("logic_user_token", secrets.token_urlsafe(16))
+            # set_cookie("logic_user_token", secrets.token_urlsafe(16))
             cur.execute("UPDATE users SET user_token = ? WHERE username = ?", (
-                get_cookie("logic_user_token"),
+                get_cookie("ajs_anonymous_id"),
                 username
             )
                         )
