@@ -188,7 +188,7 @@ def login(login_input, password):
         if user:
             # set_cookie("logic_user_token", secrets.token_urlsafe(16))
             cur.execute("UPDATE users SET user_token = ? WHERE username = ?", (
-                get_cookie("ajs_anonymous_id"),
+                st.context.cookies.get('ajs_anonymous_id', None),
                 username
             )
                         )

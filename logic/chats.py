@@ -10,7 +10,7 @@ TEMP_DIR = 'disk/temp'
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 
-user_info = get_account_info(st.session_state.cookies['ajs_anonymous_id'])
+user_info = get_account_info(st.context.cookies.get('ajs_anonymous_id', None))
 
 
 @st.cache_data

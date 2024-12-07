@@ -114,7 +114,7 @@ col2.button('', icon=":material/inbox_customize:", on_click=change_avatar)
 title = st.empty()
 st.divider()
 
-user_info = get_account_info(st.session_state.cookies['ajs_anonymous_id'])
+user_info = get_account_info(st.context.cookies.get('ajs_anonymous_id', None))
 
 if user_info:
 
