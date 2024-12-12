@@ -9,7 +9,7 @@ from openai import OpenAI
 from logic import get_account_info, remove_user_cookies
 
 
-DATA_DIR = 'disk/data'
+DATA_DIR = '/disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
 

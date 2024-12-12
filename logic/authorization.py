@@ -16,7 +16,7 @@ SMTP_SERVER = os.environ.get('SMTP_SERVER')
 EMAIL_ADDRESS = os.environ.get('EMAIL_ADDRESS')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
-DATA_DIR = 'disk/data'
+DATA_DIR = '/disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
 

@@ -6,7 +6,7 @@ from streamlit_lottie import st_lottie
 from logic import get_account_info, get_chatbot_list, get_description, new_chat, ChatbotCanvas
 
 
-TEMP_DIR = 'disk/temp'
+TEMP_DIR = '/disk/temp'
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 

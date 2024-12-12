@@ -7,7 +7,7 @@ import streamlit as st
 from openai import OpenAI
 from streamlit_lottie import st_lottie
 
-from logic import get_cookie, get_user_id, get_api_key, authorization
+from logic import get_user_id, authorization
 
 
 # st.set_page_config(
@@ -16,7 +16,7 @@ from logic import get_cookie, get_user_id, get_api_key, authorization
 # )
 
 
-DATA_DIR = 'disk/data'
+DATA_DIR = '/disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
 

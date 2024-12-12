@@ -7,7 +7,7 @@ from openai import OpenAI
 from logic import get_account_info, get_chatbot_list, new_chat, ChatbotCanvas
 
 
-TEMP_DIR = 'disk/temp'
+TEMP_DIR = '/disk/temp'
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 

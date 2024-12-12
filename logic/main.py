@@ -9,8 +9,8 @@ from gtts import gTTS
 from openai import OpenAI
 
 
-DATA_DIR = 'disk/data'
-TEMP_DIR = 'disk/temp'
+DATA_DIR = '/disk/data'
+TEMP_DIR = '/disk/temp'
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
 
@@ -198,6 +198,9 @@ def new_chat(page):
 
     if st.button("Submit"):
 
+        if set_name == '':
+            st.error('Имя не может быть пустым', icon="🚨")
+            return
         if check_chat_name(page, set_name):
             st.error(f'Имя \"{set_name}\" уже используется', icon="🚨")
             return
