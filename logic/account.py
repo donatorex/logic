@@ -6,7 +6,7 @@ import streamlit as st
 import sqlite3
 from openai import OpenAI
 
-from logic import get_account_info, remove_user_cookies
+from logic import get_account_info
 
 
 DATA_DIR = '/disk/data'

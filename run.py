@@ -4,27 +4,23 @@ import json
 import logging
 
 import streamlit as st
-from openai import OpenAI
 from streamlit_lottie import st_lottie
 
 from logic import get_user_id, authorization
 
 
-# st.set_page_config(
-#     page_title="Logic",
-#     layout="centered"
-# )
+st.set_page_config(
+    page_title="Logic",
+    layout="centered"
+)
 
 
 DATA_DIR = '/disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
 
-# Disable HTTP request logging
+# disable HTTP request logging
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
-
-
-cookies = st.context.cookies
 
 
 def create_database():
@@ -91,7 +87,6 @@ def create_database():
 
 
 def is_logged_in():
-    # return get_cookie("logic_user_token") is not None
     cookie_id = cookies.get("ajs_anonymous_id", None)
 
     if cookie_id is None:
@@ -147,7 +142,6 @@ def start_page():
         """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([2, 1, 2])
-
     if col2.button("Войти", use_container_width=True):
         authorization()
 
@@ -155,6 +149,7 @@ def start_page():
 if not os.path.exists(os.path.join(DATA_DIR, 'logic.db')):
     create_database()
 
+cookies = st.context.cookies
 cookie, is_logged_in = is_logged_in()
 
 if is_logged_in:

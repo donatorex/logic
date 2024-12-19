@@ -9,8 +9,6 @@ from email.mime.text import MIMEText
 
 import streamlit as st
 
-from logic import get_cookie, set_cookie
-
 
 SMTP_SERVER = os.environ.get('SMTP_SERVER')
 EMAIL_ADDRESS = os.environ.get('EMAIL_ADDRESS')
@@ -81,7 +79,6 @@ def email_is_unique(email):
 
 
 def email_input(tab):
-    # if st.session_state.registration_username :
     st.text_input('Email', key='email_input')
     if st.session_state.email_input:
         if not email_is_valid(st.session_state.email_input):

@@ -2,7 +2,6 @@ import os
 
 import streamlit as st
 from streamlit_lottie import st_lottie
-from openai import OpenAI
 
 from logic import get_account_info, get_chatbot_list, new_chat, ChatbotCanvas
 
