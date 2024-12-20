@@ -1,2 +1,2 @@
-from .main import get_account_info, get_user_id, get_chatbot_list, new_chat, get_description, get_api_key, ChatbotCanvas
+from .main import ChatbotCanvas, get_account_info, get_chatbot_list, get_description, get_user_id, new_chat
 from .authorization import authorization
