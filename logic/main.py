@@ -506,8 +506,8 @@ class ChatbotCanvas:
         st.divider()
 
         if self.type == "bots":
-            with st.container(border=True):
-                st.write(f"**Описание бота**:\n\n{self.description}")
+            with st.expander(f"**Описание бота:**"):
+                st.write(self.description)
 
     def canvas(self):
         messages = get_messages(self.type, self.id)
