@@ -30,3 +30,11 @@ collaboration, please contact me via the details provided in my GitHub profile.
 1. Go to the [logic website](https://logic-production.up.railway.app);
 2. Sign up or log in to account;
 3. Enjoy!
+
+## Tip: Installing Logic as a chrome application (PWA)
+
+1. Go to the [logic website](https://logic-production.up.railway.app) in Google Chrome;
+2. Click on the menu to the right of the address bar;
+3. Click "Cast, save and share" -> "Install page as app".
+
+Done! Logic is now available as an app on your desktop.
