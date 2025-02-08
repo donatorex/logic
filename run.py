@@ -11,7 +11,8 @@ from logic import get_user_id, authorization
 
 st.set_page_config(
     page_title="Logic",
-    layout="centered"
+    layout="centered",
+    page_icon="Logic.ico"
 )
 
 
