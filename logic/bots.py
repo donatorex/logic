@@ -62,7 +62,13 @@ if user_info:
             st.divider()
             st.write('Управление текущим ботом:\n')
 
-            available_models = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'chatgpt-4o-latest']
+            available_models = [
+                'gpt-4o',
+                'gpt-4o-mini',
+                'gpt-4.5-preview',
+                'gpt-4-turbo',
+                'chatgpt-4o-latest'
+            ]
 
             if model := st.pills('Модель:', available_models, selection_mode='single', default=st.session_state.model):
                 st.session_state.model = model
