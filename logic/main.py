@@ -60,7 +60,7 @@ If any section is missing in the user's request, leave it empty but retain the s
     with st.spinner("Оптимизирую промпт..."):
         # Sending the request to OpenAI API
         response = st.session_state.openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4.1-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
