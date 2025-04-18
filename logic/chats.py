@@ -51,7 +51,7 @@ if user_info:
         new_chat('chats')
 
     if 'model' not in st.session_state:
-        st.session_state.model = 'gpt-4o'
+        st.session_state.model = 'gpt-4.1'
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
