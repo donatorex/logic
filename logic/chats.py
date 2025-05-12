@@ -52,7 +52,7 @@ if user_info:
         new_chat('chats')
 
     if 'model' not in st.session_state:
-        st.session_state.model = 'gpt-4.1'
+        st.session_state.model = 'gpt-4.1-mini'
         st.session_state.openai_client = OpenAI(api_key=user_info[6])
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False

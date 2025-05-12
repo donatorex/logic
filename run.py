@@ -19,6 +19,7 @@ st.set_page_config(
 DATA_DIR = '/disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
+TEST_BUILD = True
 
 # disable HTTP request logging
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
@@ -36,7 +37,8 @@ def create_database():
                 email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 register_date TIMESTAMP NOT NULL,
-                openai_api_key TEXT
+                openai_api_key TEXT,
+                deepseek_api_key TEXT,
             )
         """)
         cur.execute("""
@@ -66,6 +68,7 @@ def create_database():
                 chat_message_date TIMESTAMP NOT NULL,
                 chat_role TEXT NOT NULL,
                 chat_message TEXT,
+                reasoning_output TEXT,
                 FOREIGN KEY (chat_id) REFERENCES chats(chat_id)
             )
         """)
@@ -76,6 +79,7 @@ def create_database():
                 bot_message_date TIMESTAMP NOT NULL,
                 bot_role TEXT NOT NULL,
                 bot_message TEXT,
+                reasoning_output TEXT,
                 FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
             )
         """)
@@ -159,7 +163,10 @@ if is_logged_in:
     if 'openai_client' not in st.session_state:
         st.session_state.openai_client = None
     st.logo('assets/logo_icon.png')
-    st.sidebar.title('TEST MODE')
+
+    if TEST_BUILD:
+        st.sidebar.title('TEST BUILD')
+
     pg = st.navigation(
         [
             st.Page("logic/account.py", title="Аккаунт", icon=":material/account_circle:", default=True),

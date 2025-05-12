@@ -165,7 +165,6 @@ if user_info:
     st.write("")
 
     if st.button("Выйти из аккаунта", icon=":material/logout:", key='logout'):
-        # remove_user_cookies()
         with st.spinner("Выход..."):
             conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
             cur = conn.cursor()

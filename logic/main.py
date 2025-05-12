@@ -250,7 +250,7 @@ def get_messages(page, canvas_id):
     cur = conn.cursor()
     try:
         cur.execute(f"""
-            SELECT {page[:-1]}_message_id, {page[:-1]}_message_date, {page[:-1]}_role, {page[:-1]}_message
+            SELECT {page[:-1]}_message_id, {page[:-1]}_message_date, {page[:-1]}_role, {page[:-1]}_message, reasoning_output
             FROM {page[:-1]}_messages
             WHERE {page[:-1]}_id = ?
             ORDER BY {page[:-1]}_message_date ASC
@@ -274,7 +274,7 @@ def formatted_date(date):
         return date.strftime('%d %b %Y - %H:%M')
 
 
-def add_message(page, canvas_id, message):
+def add_message(page, canvas_id, message, reasoning=None):
     conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
     cur = conn.cursor()
     try:
@@ -283,10 +283,11 @@ def add_message(page, canvas_id, message):
                 {page[:-1]}_id,
                 {page[:-1]}_message_date,
                 {page[:-1]}_role,
-                {page[:-1]}_message
+                {page[:-1]}_message,
+                reasoning_output
             )
-            VALUES (?, ?, ?, ?)
-        """, (canvas_id, message[0], message[1], message[2]))
+            VALUES (?, ?, ?, ?, ?)
+        """, (canvas_id, message[0], message[1], message[2], reasoning))
         conn.commit()
     except sqlite3.Error as e:
         print(f"Error while adding message: {e}")
@@ -310,7 +311,8 @@ def delete_message(page, message_id):
 
 def text2speech(text, message_id, hd=False, model=None, voice=None):
     if hd:
-        response = st.session_state.openai_client.audio.speech.create(
+        client = OpenAI(api_key=get_api_key(st.session_state.user_id))
+        response = client.audio.speech.create(
             model=model,
             voice=voice,
             input=text,
@@ -327,7 +329,7 @@ def text2speech(text, message_id, hd=False, model=None, voice=None):
 
 
 def copy_to_clipboard(text):
-    js_code = f"""
+    js_code = """
     <script>
     function copyToClipboard(text) {{
         const el = document.createElement('textarea');
@@ -380,12 +382,13 @@ def copy_to_clipboard(text):
 
 
 class Message:
-    def __init__(self, page, message, message_id=None, stream=None):
+    def __init__(self, page, message, message_id=None, reasoning=None, stream=None):
         self.type = page
         self.id = message_id
         self.date = message[0]
         self.role = message[1]
         self.message = message[2]
+        self.reasoning = reasoning
         self.stream = stream
 
         if self.role == "assistant":
@@ -439,6 +442,9 @@ class Message:
         with st.chat_message(self.role, avatar=self.avatar):
 
             self.message_template()
+            if self.reasoning:
+                exp = st.expander("Рассуждения модели")
+                exp.text(self.reasoning)
             st.markdown(self.message)
 
             if self.id:
@@ -478,7 +484,21 @@ class Message:
         with st.chat_message(self.role, avatar=self.avatar):
             self.message_template()
 
+            reasoning_placeholder = st.empty()
             message_placeholder = st.empty()
+
+            if st.session_state.openai_model == 'deepseek-reasoner':
+                self.reasoning = ''
+                for chunk in self.stream:
+                    if chunk.choices[0].delta.reasoning_content is not None:
+                        self.reasoning += chunk.choices[0].delta.reasoning_content
+                        reasoning_placeholder.markdown(self.reasoning + "▌")
+                    else:
+                        self.message += chunk.choices[0].delta.content
+                        break
+
+                exp = reasoning_placeholder.expander("Рассуждения модели")
+                exp.markdown(self.reasoning)
 
             for chunk in self.stream:
                 if chunk.choices[0].delta.content is not None:
@@ -498,8 +518,6 @@ class ChatbotCanvas:
         self.bio()
         self.canvas()
 
-        st.session_state.openai_client = OpenAI(api_key=get_api_key(st.session_state.user_id))
-
     def bio(self):
         st.title(self.name)
         st.text(f"Дата создания: {formatted_date(self.date)}")
@@ -514,7 +532,7 @@ class ChatbotCanvas:
 
         for message in messages:
             message_id = message[0]
-            Message(self.type, message[1:], message_id)
+            Message(self.type, message[1:4], message_id=message_id, reasoning=message[4])
 
     def send_message(self, message):
 
@@ -542,7 +560,16 @@ class ChatbotCanvas:
             assistant_message_date = datetime.now()
             response = Message(self.type, [assistant_message_date, "assistant", ""], stream=stream)
             add_message(self.type, self.id, [user_message_date, "user", message])
-            add_message(self.type, self.id, [assistant_message_date, "assistant", response.message])
+            add_message(
+                self.type,
+                self.id,
+                [
+                    assistant_message_date,
+                    "assistant",
+                    response.message,
+                    response.reasoning
+                ]
+            )
         except Exception as e:
             st.error(f"При отправке сообщения произошла ошибка: {e}")
 
