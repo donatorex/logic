@@ -487,7 +487,7 @@ class Message:
             reasoning_placeholder = st.empty()
             message_placeholder = st.empty()
 
-            if st.session_state.openai_model == 'deepseek-reasoner':
+            if st.session_state.model == 'deepseek-reasoner':
                 self.reasoning = ''
                 for chunk in self.stream:
                     if chunk.choices[0].delta.reasoning_content is not None:
