@@ -329,7 +329,7 @@ def text2speech(text, message_id, hd=False, model=None, voice=None):
 
 
 def copy_to_clipboard(text):
-    js_code = """
+    js_code = f"""
     <script>
     function copyToClipboard(text) {{
         const el = document.createElement('textarea');
@@ -566,9 +566,9 @@ class ChatbotCanvas:
                 [
                     assistant_message_date,
                     "assistant",
-                    response.message,
-                    response.reasoning
-                ]
+                    response.message
+                ],
+                reasoning=response.reasoning
             )
         except Exception as e:
             st.error(f"При отправке сообщения произошла ошибка: {e}")
