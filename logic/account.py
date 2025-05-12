@@ -14,6 +14,12 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 @st.dialog("Изменить API-ключ")
 def change_api_key(api):
+
+    allowed_columns = {'openai_api_key', 'deepseek_api_key'}
+    if api not in allowed_columns:
+        st.error("Недопустимое имя API-ключа")
+        return
+
     new_api_key = st.text_input("Введите новый API-ключ", type="password")
     checkbox = st.checkbox("Подтвердите, что вы ввели правильный ключ")
 
@@ -24,7 +30,7 @@ def change_api_key(api):
         conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
         cur = conn.cursor()
         try:
-            cur.execute("UPDATE users SET ? = ? WHERE user_id = ?", (api, new_api_key, st.session_state.user_id))
+            cur.execute(f"UPDATE users SET {api} = ? WHERE user_id = ?", (new_api_key, st.session_state.user_id))
             conn.commit()
         except sqlite3.Error as e:
             print(f"Error while updating API key: {e}")
