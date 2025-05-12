@@ -4,7 +4,6 @@ import time
 
 import streamlit as st
 import sqlite3
-from openai import OpenAI
 
 from logic import get_account_info
 
@@ -14,7 +13,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 
 @st.dialog("Изменить API-ключ")
-def change_api_key():
+def change_api_key(api):
     new_api_key = st.text_input("Введите новый API-ключ", type="password")
     checkbox = st.checkbox("Подтвердите, что вы ввели правильный ключ")
 
@@ -25,9 +24,8 @@ def change_api_key():
         conn = sqlite3.connect(os.path.join(DATA_DIR, 'logic.db'))
         cur = conn.cursor()
         try:
-            cur.execute("UPDATE users SET openai_api_key = ? WHERE user_id = ?", (new_api_key, st.session_state.user_id))
+            cur.execute("UPDATE users SET ? = ? WHERE user_id = ?", (api, new_api_key, st.session_state.user_id))
             conn.commit()
-            st.session_state.openai_client = OpenAI(api_key=new_api_key)
         except sqlite3.Error as e:
             print(f"Error while updating API key: {e}")
         finally:
@@ -117,7 +115,7 @@ user_info = get_account_info(st.context.cookies.get('ajs_anonymous_id', None))
 
 if user_info:
 
-    user_id, user_token, username, email, password, register_date_str, api_key = user_info
+    user_id, user_token, username, email, password, register_date_str, openai_api_key, deepseek_api_key = user_info
     register_date = datetime.datetime.strptime(register_date_str, '%Y-%m-%d %H:%M:%S.%f')
 
     title.title(f":gray[Аккаунт:] {username}")
@@ -144,8 +142,19 @@ if user_info:
     st.caption('OpenAI API key:')
     with st.container():
         col1, col2 = st.columns([8, 1])
-        col1.text_input(label='API_KEY', value=api_key, disabled=True, label_visibility='collapsed')
-        col2.button("", icon=':material/edit:', key='change_api_key', on_click=change_api_key)
+        col1.text_input(label='API_KEY', value=openai_api_key, disabled=True, label_visibility='collapsed')
+        change_button_1 = col2.button("", icon=':material/edit:', key='change_openai_api_key')
+
+    st.caption('DeepSeek API key:')
+    with st.container():
+        col1, col2 = st.columns([8, 1])
+        col1.text_input(label='API_KEY', value=deepseek_api_key, disabled=True, label_visibility='collapsed')
+        change_button_2 = col2.button("", icon=':material/edit:', key='change_deepseek_api_key')
+
+    if change_button_1:
+        change_api_key('openai_api_key')
+    if change_button_2:
+        change_api_key('deepseek_api_key')
 
     st.write("")
 

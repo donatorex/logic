@@ -1,6 +1,7 @@
 import os
 
 import streamlit as st
+from openai import OpenAI
 from streamlit_lottie import st_lottie
 
 from logic import get_account_info, get_chatbot_list, new_chat, ChatbotCanvas
@@ -52,6 +53,7 @@ if user_info:
 
     if 'model' not in st.session_state:
         st.session_state.model = 'gpt-4.1'
+        st.session_state.openai_client = OpenAI(api_key=user_info[6])
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
@@ -69,10 +71,17 @@ if user_info:
                 'gpt-4o',
                 'chatgpt-4o-latest',
                 'gpt-4-turbo',
+                'deepseek-chat',
+                'deepseek-reasoner'
             ]
 
             if model := st.pills('Модель:', available_models, selection_mode='single', default=st.session_state.model):
                 st.session_state.model = model
+                if 'deepseek' in model:
+                    st.session_state.openai_client = OpenAI(
+                        api_key=user_info[7], base_url="https://api.deepseek.com")
+                else:
+                    st.session_state.openai_client = OpenAI(api_key=user_info[6])
 
             st.toggle('Сохранять историю', help="""
                 GPT модель будет помнить всю историю сообщений данного чата (при этом стоимость
