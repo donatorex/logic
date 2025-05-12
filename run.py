@@ -159,6 +159,7 @@ if is_logged_in:
     if 'openai_client' not in st.session_state:
         st.session_state.openai_client = None
     st.logo('assets/logo_icon.png')
+    st.sidebar.title('TEST MODE')
     pg = st.navigation(
         [
             st.Page("logic/account.py", title="Аккаунт", icon=":material/account_circle:", default=True),
