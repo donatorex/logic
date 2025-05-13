@@ -81,7 +81,6 @@ if user_info:
             ]
 
             available_reasoning_models = [
-                'o3',
                 'o3-mini',
                 'o4-mini'
             ]
@@ -106,7 +105,7 @@ if user_info:
                 'Модель:',
                 available_classic_models if not switcher else available_reasoning_models,
                 label_visibility='collapsed',
-                default=available_classic_models[0] if not switcher else available_reasoning_models[0],
+                # default=available_classic_models[0] if not switcher else available_reasoning_models[0],
                 key='model'
             )
 
