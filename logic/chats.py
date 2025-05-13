@@ -33,6 +33,8 @@ if user_info:
             > 3. Перейдите в раздел API Keys;
             > 4. Нажмите "Create new secret key" для создания нового ключа;
             > 5. Скопируйте сгенерированный ключ и вставьте его в разделе "Аккаунт".
+            
+            Также можете указать DeepSeek API-ключ для доступа к моделям DeepSeek.
         """
                 )
         st.stop()
@@ -70,10 +72,11 @@ if user_info:
                 'gpt-4.1-nano',
                 'gpt-4o',
                 'chatgpt-4o-latest',
-                'gpt-4-turbo',
-                'deepseek-chat',
-                'deepseek-reasoner'
+                'gpt-4-turbo'
             ]
+
+            if user_info[7]:
+                available_models += ['deepseek-chat', 'deepseek-reasoner']
 
             if model := st.pills('Модель:', available_models, selection_mode='single', default=st.session_state.model):
                 st.session_state.model = model

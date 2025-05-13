@@ -1,6 +1,7 @@
 import os
 
 import streamlit as st
+from openai import OpenAI
 from streamlit_lottie import st_lottie
 
 from logic import get_account_info, get_chatbot_list, get_description, new_chat, ChatbotCanvas
@@ -32,6 +33,8 @@ if user_info:
             > 3. Перейдите в раздел API Keys;
             > 4. Нажмите "Create new secret key" для создания нового ключа;
             > 5. Скопируйте сгенерированный ключ и вставьте его в разделе "Аккаунт".
+            
+            Также можете указать DeepSeek API-ключ для доступа к моделям DeepSeek.
         """
                 )
         st.stop()
@@ -51,7 +54,8 @@ if user_info:
         new_chat('bots')
 
     if 'model' not in st.session_state:
-        st.session_state.model = 'gpt-4.1'
+        st.session_state.model = 'gpt-4.1-mini'
+        st.session_state.openai_client = OpenAI(api_key=user_info[6])
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
@@ -62,17 +66,55 @@ if user_info:
             st.divider()
             st.write('Управление текущим ботом:\n')
 
-            available_models = [
+            option_map = {
+                0: '💬 Обычные модели',
+                1: '🧠 Reasoning-модели'
+            }
+
+            available_classic_models = [
                 'gpt-4.1',
                 'gpt-4.1-mini',
                 'gpt-4.1-nano',
                 'gpt-4o',
                 'chatgpt-4o-latest',
-                'gpt-4-turbo',
+                'gpt-4-turbo'
             ]
 
-            if model := st.pills('Модель:', available_models, selection_mode='single', default=st.session_state.model):
-                st.session_state.model = model
+            available_reasoning_models = [
+                'o3',
+                'o3-mini',
+                'o4-mini'
+            ]
+
+            if user_info[7]:
+                available_classic_models.append('deepseek-chat')
+                available_reasoning_models.append('deepseek-reasoner')
+
+            switcher = st.segmented_control(
+                'Выберите модель:',
+                options=option_map.keys(),
+                format_func=lambda option: option_map[option],
+                default=0,
+                selection_mode='single',
+                key='switcher',
+            )
+
+            if switcher is None:
+                switcher = st.session_state.model in available_reasoning_models
+
+            model = st.pills(
+                'Модель:',
+                available_classic_models if not switcher else available_reasoning_models,
+                label_visibility='collapsed',
+                default=available_classic_models[0] if not switcher else available_reasoning_models[0],
+                key='model'
+            )
+
+            if 'deepseek' in model:
+                st.session_state.openai_client = OpenAI(
+                    api_key=user_info[7], base_url="https://api.deepseek.com")
+            else:
+                st.session_state.openai_client = OpenAI(api_key=user_info[6])
 
             st.toggle('Сохранять историю', help="""
                 GPT модель будет помнить всю историю сообщений данного бота (при этом стоимость
