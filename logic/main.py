@@ -552,12 +552,21 @@ class ChatbotCanvas:
 
         try:
             with st.spinner("Обдумываю ваш вопрос...", show_time=True):
-                stream = st.session_state.openai_client.chat.completions.create(
-                    model=st.session_state.model,
-                    messages=messages,
-                    # temperature=0.5,
-                    stream=True
-                )
+                if st.session_state.model in ('o3-mini', 'o4-mini'):
+                    stream = st.session_state.openai_client.chat.completions.create(
+                        model=st.session_state.model,
+                        messages=messages,
+                        reasoning_effort="high",
+                        # temperature=0.5,
+                        stream=True
+                    )
+                else:
+                    stream = st.session_state.openai_client.chat.completions.create(
+                        model=st.session_state.model,
+                        messages=messages,
+                        # temperature=0.5,
+                        stream=True
+                    )
                 assistant_message_date = datetime.now()
                 response = Message(self.type, [assistant_message_date, "assistant", ""], stream=stream)
                 add_message(self.type, self.id, [user_message_date, "user", message])
