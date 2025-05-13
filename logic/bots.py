@@ -112,7 +112,7 @@ if user_info:
                 available_classic_models if not switcher else available_reasoning_models,
                 label_visibility='collapsed',
                 # default=st.session_state.default_model,
-                disabled=st.session_state.switcher is None,
+                # disabled=st.session_state.switcher is None,
                 key='model'
             )
 
@@ -172,6 +172,6 @@ if user_info:
             del st.session_state['repeat_message']
             st.rerun()
 
-        if prompt := st.chat_input("Введи своё сообщение...", disabled=model is None):
+        if prompt := st.chat_input("Введи своё сообщение..."):
             bot_canvas.send_message(prompt)
             st.rerun()
