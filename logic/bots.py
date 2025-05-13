@@ -56,8 +56,8 @@ if user_info:
     # if 'model' not in st.session_state:
     #     st.session_state.model = 'gpt-4.1-mini'
     #     st.session_state.openai_client = OpenAI(api_key=user_info[6])
-    if 'default_model' not in st.session_state:
-        st.session_state.default_model = None
+    # if 'default_model' not in st.session_state:
+    #     st.session_state.default_model = None
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
@@ -100,10 +100,10 @@ if user_info:
                 key='switcher',
             )
 
-            if switcher:
-                st.session_state.default_model = available_classic_models[0]
-            elif switcher is False:
-                st.session_state.default_model = available_reasoning_models[0]
+            # if switcher:
+            #     st.session_state.default_model = available_classic_models[0]
+            # elif switcher is False:
+            #     st.session_state.default_model = available_reasoning_models[0]
             # else:
             #     switcher = st.session_state.model in available_reasoning_models
 
@@ -112,7 +112,7 @@ if user_info:
                 available_classic_models if not switcher else available_reasoning_models,
                 label_visibility='collapsed',
                 # default=st.session_state.default_model,
-                disabled=switcher is None,
+                disabled=st.session_state.switcher is None,
                 key='model'
             )
 
