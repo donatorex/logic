@@ -111,7 +111,7 @@ if user_info:
                 'Модель:',
                 available_classic_models if not switcher else available_reasoning_models,
                 label_visibility='collapsed',
-                default=st.session_state.default_model,
+                # default=st.session_state.default_model,
                 disabled=switcher is None,
                 key='model'
             )
