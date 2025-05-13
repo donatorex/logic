@@ -55,7 +55,7 @@ if user_info:
 
     if 'model' not in st.session_state:
         st.session_state.model = 'gpt-4.1-mini'
-        st.session_state.openai_client = OpenAI(api_key=user_info[6])
+        # st.session_state.openai_client = OpenAI(api_key=user_info[6])
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
@@ -72,7 +72,9 @@ if user_info:
                 'gpt-4.1-nano',
                 'gpt-4o',
                 'chatgpt-4o-latest',
-                'gpt-4-turbo'
+                'gpt-4-turbo',
+                'o3-mini',
+                'o4-mini'
             ]
 
             if user_info[7]:

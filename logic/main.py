@@ -551,25 +551,26 @@ class ChatbotCanvas:
             ] + [{"role": "user", "content": message}]
 
         try:
-            stream = st.session_state.openai_client.chat.completions.create(
-                model=st.session_state.model,
-                messages=messages,
-                # temperature=0.5,
-                stream=True
-            )
-            assistant_message_date = datetime.now()
-            response = Message(self.type, [assistant_message_date, "assistant", ""], stream=stream)
-            add_message(self.type, self.id, [user_message_date, "user", message])
-            add_message(
-                self.type,
-                self.id,
-                [
-                    assistant_message_date,
-                    "assistant",
-                    response.message
-                ],
-                reasoning=response.reasoning
-            )
+            with st.spinner("Обдумываю ваш вопрос...", show_time=True):
+                stream = st.session_state.openai_client.chat.completions.create(
+                    model=st.session_state.model,
+                    messages=messages,
+                    # temperature=0.5,
+                    stream=True
+                )
+                assistant_message_date = datetime.now()
+                response = Message(self.type, [assistant_message_date, "assistant", ""], stream=stream)
+                add_message(self.type, self.id, [user_message_date, "user", message])
+                add_message(
+                    self.type,
+                    self.id,
+                    [
+                        assistant_message_date,
+                        "assistant",
+                        response.message
+                    ],
+                    reasoning=response.reasoning
+                )
         except Exception as e:
             st.error(f"При отправке сообщения произошла ошибка: {e}")
 
