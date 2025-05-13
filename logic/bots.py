@@ -67,8 +67,8 @@ if user_info:
             st.write('Управление текущим ботом:\n')
 
             option_map = {
-                0: '💬 Обычные модели',
-                1: '🧠 Reasoning-модели'
+                0: '💬 classic',
+                1: '🧠 reasoning'
             }
 
             available_classic_models = [
