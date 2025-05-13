@@ -53,9 +53,9 @@ if user_info:
     if st.sidebar.button('Новый бот'):
         new_chat('bots')
 
-    if 'model' not in st.session_state:
-        st.session_state.model = 'gpt-4.1-mini'
-        st.session_state.openai_client = OpenAI(api_key=user_info[6])
+    # if 'model' not in st.session_state:
+    #     st.session_state.model = 'gpt-4.1-mini'
+    #     st.session_state.openai_client = OpenAI(api_key=user_info[6])
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
@@ -93,23 +93,28 @@ if user_info:
                 'Выберите модель:',
                 options=option_map.keys(),
                 format_func=lambda option: option_map[option],
-                default=0,
+                # default=0,
                 selection_mode='single',
                 key='switcher',
             )
 
-            if switcher is None:
-                switcher = st.session_state.model in available_reasoning_models
+            if switcher:
+                st.session_state.default_model = available_classic_models[0]
+            elif switcher is False:
+                st.session_state.default_model = available_reasoning_models[0]
+            # else:
+            #     switcher = st.session_state.model in available_reasoning_models
 
             model = st.pills(
                 'Модель:',
                 available_classic_models if not switcher else available_reasoning_models,
                 label_visibility='collapsed',
-                # default=available_classic_models[0] if not switcher else available_reasoning_models[0],
+                default=st.session_state.default_model,
+                disabled=switcher is None,
                 key='model'
             )
 
-            if 'deepseek' in model:
+            if model and 'deepseek' in model:
                 st.session_state.openai_client = OpenAI(
                     api_key=user_info[7], base_url="https://api.deepseek.com")
             else:
@@ -165,6 +170,6 @@ if user_info:
             del st.session_state['repeat_message']
             st.rerun()
 
-        if prompt := st.chat_input("Введи своё сообщение..."):
+        if prompt := st.chat_input("Введи своё сообщение...", disabled=model is None):
             bot_canvas.send_message(prompt)
             st.rerun()
