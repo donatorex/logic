@@ -56,6 +56,8 @@ if user_info:
     # if 'model' not in st.session_state:
     #     st.session_state.model = 'gpt-4.1-mini'
     #     st.session_state.openai_client = OpenAI(api_key=user_info[6])
+    if 'default_model' not in st.session_state:
+        st.session_state.default_model = None
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
