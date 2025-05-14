@@ -179,6 +179,6 @@ if user_info:
             del st.session_state['repeat_message']
             st.rerun()
 
-        if prompt := st.chat_input("Введи своё сообщение..."):
+        if prompt := st.chat_input("Введи своё сообщение...", disabled=st.session_state.model is None):
             chat_canvas.send_message(prompt)
             st.rerun()
