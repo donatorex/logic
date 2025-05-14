@@ -426,21 +426,7 @@ class Message:
             self.show_message()
 
     def message_template(self):
-        # return st.markdown(
-        #     f"""
-        #     <div style="display: flex; align-items: center; margin-bottom: 5px;">
-        #         <div style="
-        #             flex-grow: 1;
-        #             color: #6d6d6d;
-        #             ">
-        #             {formatted_date(self.date)}
-        #         </div>,
-        #     </div>
-        #     """,
-        #     unsafe_allow_html=True,
-        # )
-        return st.markdown(
-            f"""
+        template = f"""
             <div style="
                 display: flex;
                 align-items: center;
@@ -450,25 +436,30 @@ class Message:
                 <div style="color: #6d6d6d;">
                     {formatted_date(self.date)}
                 </div>
+            </div>
+        """
+
+        model_badge = f"""
                 <div style="
-                    background-color: #6d6d6d;
-                    color: white;
-                    padding: 2px 8px;
-                    border-radius: 12px;
-                    font-size: 12px;
+                    background-color: #444750;
+                    color: #6d6d6d;
+                    padding: 2px;
+                    border-radius: 2px;
                 ">
                     {self.model}
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        """
+
+        if self.model:
+            template = template[:-12] + model_badge
+
+        return st.markdown(template, unsafe_allow_html=True)
 
     def show_message(self):
         with st.chat_message(self.role, avatar=self.avatar):
 
             self.message_template()
-            badge = st.empty()
             if self.reasoning:
                 exp = st.expander("Рассуждения модели")
                 exp.caption(self.reasoning)
@@ -489,7 +480,6 @@ class Message:
                         delete_message(self.type, self.id)
                         st.rerun()
                 else:
-                    badge.badge(st.session_state.model, color='gray')
                     with col1:
                         copy_to_clipboard(self.message)
                     hd_speech = ' (HD)' if st.session_state.hd_speech else ''
@@ -511,8 +501,6 @@ class Message:
     def stream_message(self):
         with st.chat_message(self.role, avatar=self.avatar):
             self.message_template()
-
-            st.badge(st.session_state.model, color='gray')
 
             reasoning_placeholder = st.empty()
             message_placeholder = st.empty()
