@@ -69,6 +69,7 @@ def create_database():
                 chat_role TEXT NOT NULL,
                 chat_message TEXT,
                 reasoning_output TEXT,
+                model TEXT,
                 FOREIGN KEY (chat_id) REFERENCES chats(chat_id)
             )
         """)
@@ -80,6 +81,7 @@ def create_database():
                 bot_role TEXT NOT NULL,
                 bot_message TEXT,
                 reasoning_output TEXT,
+                model TEXT,
                 FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
             )
         """)

@@ -250,7 +250,7 @@ def get_messages(page, canvas_id):
     cur = conn.cursor()
     try:
         cur.execute(f"""
-            SELECT {page[:-1]}_message_id, {page[:-1]}_message_date, {page[:-1]}_role, {page[:-1]}_message, reasoning_output
+            SELECT {page[:-1]}_message_id, {page[:-1]}_message_date, {page[:-1]}_role, {page[:-1]}_message, reasoning_output, model
             FROM {page[:-1]}_messages
             WHERE {page[:-1]}_id = ?
             ORDER BY {page[:-1]}_message_date ASC
@@ -284,10 +284,11 @@ def add_message(page, canvas_id, message, reasoning=None):
                 {page[:-1]}_message_date,
                 {page[:-1]}_role,
                 {page[:-1]}_message,
-                reasoning_output
+                reasoning_output,
+                model
             )
-            VALUES (?, ?, ?, ?, ?)
-        """, (canvas_id, message[0], message[1], message[2], reasoning))
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (canvas_id, message[0], message[1], message[2], reasoning, st.session_state.model))
         conn.commit()
     except sqlite3.Error as e:
         print(f"Error while adding message: {e}")
@@ -382,7 +383,7 @@ def copy_to_clipboard(text):
 
 
 class Message:
-    def __init__(self, page, message, message_id=None, reasoning=None, stream=None):
+    def __init__(self, page, message, message_id=None, reasoning=None, stream=None, model=None):
         self.type = page
         self.id = message_id
         self.date = message[0]
@@ -390,6 +391,7 @@ class Message:
         self.message = message[2]
         self.reasoning = reasoning
         self.stream = stream
+        self.model = model
 
         if self.role == "assistant":
             self.avatar = f"assets/{self.type}_avatar.jpg"
@@ -424,14 +426,38 @@ class Message:
             self.show_message()
 
     def message_template(self):
+        # return st.markdown(
+        #     f"""
+        #     <div style="display: flex; align-items: center; margin-bottom: 5px;">
+        #         <div style="
+        #             flex-grow: 1;
+        #             color: #6d6d6d;
+        #             ">
+        #             {formatted_date(self.date)}
+        #         </div>,
+        #     </div>
+        #     """,
+        #     unsafe_allow_html=True,
+        # )
         return st.markdown(
             f"""
-            <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                <div style="
-                    flex-grow: 1;
-                    color: #6d6d6d;
-                    ">
+            <div style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            ">
+                <div style="color: #6d6d6d;">
                     {formatted_date(self.date)}
+                </div>
+                <div style="
+                    background-color: #6d6d6d;
+                    color: white;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                ">
+                    {self.model}
                 </div>
             </div>
             """,
@@ -536,7 +562,7 @@ class ChatbotCanvas:
 
         for message in messages:
             message_id = message[0]
-            Message(self.type, message[1:4], message_id=message_id, reasoning=message[4])
+            Message(self.type, message[1:4], message_id=message_id, reasoning=message[4], model=message[5])
 
     def send_message(self, message):
 
