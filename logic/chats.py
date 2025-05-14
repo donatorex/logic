@@ -175,10 +175,14 @@ if user_info:
                 os.remove(os.path.join(TEMP_DIR, filename))
 
         if 'repeat_message' in st.session_state:
-            chat_canvas.send_message(st.session_state.repeat_message)
             del st.session_state['repeat_message']
-            st.rerun()
+
+            if st.session_state.model is None:
+                st.toast('Сначала выберите модель')
+            else:
+                chat_canvas.send_message(st.session_state.repeat_message)
+                st.rerun()
 
         if prompt := st.chat_input("Введи своё сообщение...", disabled=st.session_state.model is None):
-            chat_canvas.send_message(prompt)
+            chat_canvas.send_message(prompt, model=st.session_state.model)
             st.rerun()
