@@ -484,6 +484,8 @@ class Message:
         with st.chat_message(self.role, avatar=self.avatar):
             self.message_template()
 
+            st.badge(st.session_state.model)
+
             reasoning_placeholder = st.empty()
             message_placeholder = st.empty()
 
