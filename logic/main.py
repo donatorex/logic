@@ -426,6 +426,11 @@ class Message:
             self.show_message()
 
     def message_template(self):
+        if self.role == "assistant" and self.model:
+            model_badge = f'<div style="color: #6d6d6d;">{self.model}</div>'
+        else:
+            model_badge = ''
+
         template = f"""
             <div style="
                 display: flex;
@@ -433,21 +438,10 @@ class Message:
                 justify-content: space-between;
                 margin-bottom: 5px;
             ">
-                <div style="color: #6d6d6d;">
-                    {formatted_date(self.date)}
-                </div>
+                <div style="color: #6d6d6d;">{formatted_date(self.date)}</div>
+                {model_badge}
             </div>
         """
-
-        model_badge = f"""
-                <div style="color: #6d6d6d;">
-                    {self.model}
-                </div>
-            </div>
-        """
-
-        if self.role == "assistant":
-            template = template[:-12] + model_badge
 
         return st.markdown(template, unsafe_allow_html=True)
 
