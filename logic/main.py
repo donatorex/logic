@@ -440,18 +440,13 @@ class Message:
         """
 
         model_badge = f"""
-                <div style="
-                    background-color: #444750;
-                    color: #6d6d6d;
-                    padding: 2px;
-                    border-radius: 2px;
-                ">
+                <div style="color: #6d6d6d;">
                     {self.model}
                 </div>
             </div>
         """
 
-        if self.model:
+        if self.role == "assistant":
             template = template[:-12] + model_badge
 
         return st.markdown(template, unsafe_allow_html=True)
