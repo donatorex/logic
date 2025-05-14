@@ -442,9 +442,10 @@ class Message:
         with st.chat_message(self.role, avatar=self.avatar):
 
             self.message_template()
+            badge = st.empty()
             if self.reasoning:
                 exp = st.expander("Рассуждения модели")
-                exp.markdown(f":gray[{self.reasoning}]")
+                exp.caption(self.reasoning)
             st.markdown(self.message)
 
             if self.id:
@@ -462,6 +463,7 @@ class Message:
                         delete_message(self.type, self.id)
                         st.rerun()
                 else:
+                    badge.badge(st.session_state.model, color='gray')
                     with col1:
                         copy_to_clipboard(self.message)
                     hd_speech = ' (HD)' if st.session_state.hd_speech else ''
@@ -484,7 +486,7 @@ class Message:
         with st.chat_message(self.role, avatar=self.avatar):
             self.message_template()
 
-            st.badge(st.session_state.model)
+            st.badge(st.session_state.model, color='gray')
 
             reasoning_placeholder = st.empty()
             message_placeholder = st.empty()
@@ -494,13 +496,13 @@ class Message:
                 for chunk in self.stream:
                     if chunk.choices[0].delta.reasoning_content is not None:
                         self.reasoning += chunk.choices[0].delta.reasoning_content
-                        reasoning_placeholder.markdown(f":gray[{self.reasoning + "▌"}]")
+                        reasoning_placeholder.caption(self.reasoning + "▌")
                     else:
                         self.message += chunk.choices[0].delta.content
                         break
 
                 exp = reasoning_placeholder.expander("Рассуждения модели")
-                exp.markdown(f":gray[{self.reasoning}]")
+                exp.caption(self.reasoning)
 
             for chunk in self.stream:
                 if chunk.choices[0].delta.content is not None:
