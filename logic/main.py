@@ -444,7 +444,7 @@ class Message:
             self.message_template()
             if self.reasoning:
                 exp = st.expander("Рассуждения модели")
-                exp.text(self.reasoning)
+                exp.markdown(f":gray[{self.reasoning}]")
             st.markdown(self.message)
 
             if self.id:
@@ -492,13 +492,13 @@ class Message:
                 for chunk in self.stream:
                     if chunk.choices[0].delta.reasoning_content is not None:
                         self.reasoning += chunk.choices[0].delta.reasoning_content
-                        reasoning_placeholder.markdown(self.reasoning + "▌")
+                        reasoning_placeholder.markdown(f":gray[{self.reasoning + "▌"}]")
                     else:
                         self.message += chunk.choices[0].delta.content
                         break
 
                 exp = reasoning_placeholder.expander("Рассуждения модели")
-                exp.markdown(self.reasoning)
+                exp.markdown(f":gray[{self.reasoning}]")
 
             for chunk in self.stream:
                 if chunk.choices[0].delta.content is not None:
