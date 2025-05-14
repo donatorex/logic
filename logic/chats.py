@@ -123,7 +123,7 @@ if user_info:
 
             st.session_state.model = cm_pills_value if cm_pills_value else rm_pills_value
 
-            if 'deepseek' in st.session_state.model:
+            if st.session_state.model and 'deepseek' in st.session_state.model:
                 st.session_state.openai_client = OpenAI(
                     api_key=user_info[7], base_url="https://api.deepseek.com")
             else:
