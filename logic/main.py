@@ -541,7 +541,7 @@ class ChatbotCanvas:
             message_id = message[0]
             Message(self.type, message[1:4], message_id=message_id, reasoning=message[4], model=message[5])
 
-    def send_message(self, message):
+    def send_message(self, message, model=None):
 
         if st.session_state.optimize_prompt and not st.session_state.save_history:
             message = optimize_prompt(self.type, message)
@@ -561,7 +561,7 @@ class ChatbotCanvas:
             with st.spinner("Обдумываю ваш вопрос...", show_time=True):
                 if st.session_state.model in ('o3-mini', 'o4-mini'):
                     stream = st.session_state.openai_client.chat.completions.create(
-                        model=st.session_state.model,
+                        model=model if model else st.session_state.model,
                         messages=messages,
                         reasoning_effort="high",
                         # temperature=0.5,
@@ -569,7 +569,7 @@ class ChatbotCanvas:
                     )
                 else:
                     stream = st.session_state.openai_client.chat.completions.create(
-                        model=st.session_state.model,
+                        model=model if model else st.session_state.model,
                         messages=messages,
                         # temperature=0.5,
                         stream=True
