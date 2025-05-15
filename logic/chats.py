@@ -177,6 +177,7 @@ if user_info:
                 os.remove(os.path.join(TEMP_DIR, filename))
 
         if 'repeat_message' in st.session_state:
+            st.rerun()
             del st.session_state['repeat_message']
 
             if st.session_state.model is None:
