@@ -463,7 +463,7 @@ class Message:
                     with col1:
                         copy_to_clipboard(self.message)
                     if col2.button("Повторить", icon=':material/replay:', key=f"retry_message_id_{self.id}"):
-                        st.session_state.repeat_message = (st.session_state.model, self.message)
+                        st.session_state.repeat_message = self.message
                         st.rerun()
                     if col3.button("Удалить", icon=':material/delete:', key=f"delete_message_id_{self.id}"):
                         delete_message(self.type, self.id)
@@ -541,7 +541,7 @@ class ChatbotCanvas:
             message_id = message[0]
             Message(self.type, message[1:4], message_id=message_id, reasoning=message[4], model=message[5])
 
-    def send_message(self, message, model=None):
+    def send_message(self, message):
 
         if st.session_state.optimize_prompt and not st.session_state.save_history:
             message = optimize_prompt(self.type, message)
@@ -557,17 +557,16 @@ class ChatbotCanvas:
                 {"role": _m[2], "content": _m[3]} for _m in get_messages(self.type, self.id)
             ] + [{"role": "user", "content": message}]
 
-        if st.session_state.model is None:
-            st.session_state.model = model
-
         try:
             with st.spinner("Обдумываю ваш вопрос...", show_time=True):
-                if st.session_state.model in ('o3-mini', 'o4-mini'):
+                if st.session_state.model in ('o3-mini (high)',
+                                              'o3-mini (medium)',
+                                              'o4-mini (high)',
+                                              'o4-mini (medium)'):
                     stream = st.session_state.openai_client.chat.completions.create(
-                        model=st.session_state.model,
+                        model=st.session_state.model[:7],
                         messages=messages,
-                        reasoning_effort="high",
-                        # temperature=0.5,
+                        reasoning_effort=st.session_state.model[9:-1],
                         stream=True
                     )
                 else:

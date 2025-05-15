@@ -60,13 +60,7 @@ if user_info:
         new_chat('chats')
 
     if 'model' not in st.session_state:
-        st.session_state.model = None
-    #     st.session_state.model = 'gpt-4.1-mini'
-        # st.session_state.openai_client = OpenAI(api_key=user_info[6])
-    if 'cm_pills_reset_key' not in st.session_state:
-        st.session_state.cm_pills_reset_key = 0
-    if 'rm_pills_reset_key' not in st.session_state:
-        st.session_state.rm_pills_reset_key = 0
+        st.session_state.model = 'gpt-4.1-mini'
     if 'hd_speech' not in st.session_state:
         st.session_state.hd_speech = False
 
@@ -77,51 +71,24 @@ if user_info:
             st.divider()
             st.write('Управление текущим чатом:\n')
 
-            available_classic_models = [
+            available_models = [
                 'gpt-4.1',
                 'gpt-4.1-mini',
                 'gpt-4.1-nano',
                 'gpt-4o',
                 'chatgpt-4o-latest',
-                'gpt-4-turbo'
-            ]
-            available_reasoning_models = [
-                'o3-mini',
-                'o4-mini'
+                'gpt-4-turbo',
+                'o3-mini (high)',
+                'o3-mini (medium)',
+                'o4-mini (high)',
+                'o4-mini (medium)'
             ]
 
             if user_info[7]:
-                available_classic_models.append('deepseek-chat')
-                available_reasoning_models.append('deepseek-reasoner')
-
-            tab1, tab2 = st.tabs(['💬 Обычные модели', '🧠 Reasoning-модели'])
-
-            classic_models_pills = tab1.empty()
-            reasoning_models_pills = tab2.empty()
-
-            classic_models_pills.pills(
-                'classic',
-                available_classic_models,
-                label_visibility='collapsed',
-                default=None,
-                key=f'cm_pills_{st.session_state.cm_pills_reset_key}',
-                on_change=reset_selection,
-                args=(False,)
-            )
-            reasoning_models_pills.pills(
-                'reasoning',
-                available_reasoning_models,
-                label_visibility='collapsed',
-                default=None,
-                key=f'rm_pills_{st.session_state.rm_pills_reset_key}',
-                on_change=reset_selection,
-                args=(True,)
-            )
-
-            cm_pills_value = st.session_state[f'cm_pills_{st.session_state.cm_pills_reset_key}']
-            rm_pills_value = st.session_state[f'rm_pills_{st.session_state.rm_pills_reset_key}']
-
-            st.session_state.model = cm_pills_value if cm_pills_value else rm_pills_value
+                available_models += ['deepseek-chat', 'deepseek-reasoner']
+            
+            if model := st.pills('Модель:', available_models, selection_mode='single', default=st.session_state.model):
+                st.session_state.model = model
 
             if st.session_state.model and 'deepseek' in st.session_state.model:
                 st.session_state.openai_client = OpenAI(
@@ -177,16 +144,10 @@ if user_info:
                 os.remove(os.path.join(TEMP_DIR, filename))
 
         if 'repeat_message' in st.session_state:
-            if st.session_state.repeat_message[0] is None:
-                st.toast('Сначала выберите модель')
-            else:
-                chat_canvas.send_message(
-                    message=st.session_state.repeat_message[1],
-                    model=st.session_state.repeat_message[0]
-                )
-                del st.session_state['repeat_message']
-                st.rerun()
+            chat_canvas.send_message(st.session_state.repeat_message)
+            del st.session_state['repeat_message']
+            st.rerun()
 
-        if prompt := st.chat_input("Введи своё сообщение...", disabled=st.session_state.model is None):
+        if prompt := st.chat_input("Введи своё сообщение..."):
             chat_canvas.send_message(prompt)
             st.rerun()
