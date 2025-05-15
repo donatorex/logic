@@ -463,6 +463,7 @@ class Message:
                     with col1:
                         copy_to_clipboard(self.message)
                     if col2.button("Повторить", icon=':material/replay:', key=f"retry_message_id_{self.id}"):
+                        print('model:', st.session_state.model)
                         st.session_state.repeat_message = self.message
                         st.rerun()
                     if col3.button("Удалить", icon=':material/delete:', key=f"delete_message_id_{self.id}"):
