@@ -170,7 +170,6 @@ if user_info:
                 chat_canvas.delete()
                 st.rerun()
 
-        if st.button('print state', key='prints_ss'):
             st.write(st.session_state)
 
         for filename in os.listdir(TEMP_DIR):
