@@ -557,11 +557,14 @@ class ChatbotCanvas:
                 {"role": _m[2], "content": _m[3]} for _m in get_messages(self.type, self.id)
             ] + [{"role": "user", "content": message}]
 
+        if st.session_state.model is None:
+            st.session_state.model = model
+
         try:
             with st.spinner("Обдумываю ваш вопрос...", show_time=True):
                 if st.session_state.model in ('o3-mini', 'o4-mini'):
                     stream = st.session_state.openai_client.chat.completions.create(
-                        model=model if model else st.session_state.model,
+                        model=st.session_state.model,
                         messages=messages,
                         reasoning_effort="high",
                         # temperature=0.5,
@@ -569,7 +572,7 @@ class ChatbotCanvas:
                     )
                 else:
                     stream = st.session_state.openai_client.chat.completions.create(
-                        model=model if model else st.session_state.model,
+                        model=st.session_state.model,
                         messages=messages,
                         # temperature=0.5,
                         stream=True
