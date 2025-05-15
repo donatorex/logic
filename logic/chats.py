@@ -180,7 +180,10 @@ if user_info:
             if st.session_state.repeat_message[0] is None:
                 st.toast('Сначала выберите модель')
             else:
-                chat_canvas.send_message(st.session_state.repeat_message[1])
+                chat_canvas.send_message(
+                    message=st.session_state.repeat_message[1],
+                    model=st.session_state.repeat_message[0]
+                )
                 del st.session_state['repeat_message']
                 st.rerun()
 
