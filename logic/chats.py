@@ -170,20 +170,18 @@ if user_info:
                 chat_canvas.delete()
                 st.rerun()
 
-            st.write(st.session_state)
+            # st.write(st.session_state)
 
         for filename in os.listdir(TEMP_DIR):
             if filename.startswith(f'voice_message_{st.session_state.user_id}'):
                 os.remove(os.path.join(TEMP_DIR, filename))
 
         if 'repeat_message' in st.session_state:
-            st.rerun()
-            del st.session_state['repeat_message']
-
-            if st.session_state.model is None:
+            if st.session_state.repeat_message[0] is None:
                 st.toast('Сначала выберите модель')
             else:
-                chat_canvas.send_message(st.session_state.repeat_message)
+                chat_canvas.send_message(st.session_state.repeat_message[1])
+                del st.session_state['repeat_message']
                 st.rerun()
 
         if prompt := st.chat_input("Введи своё сообщение...", disabled=st.session_state.model is None):
