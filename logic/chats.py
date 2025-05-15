@@ -170,6 +170,9 @@ if user_info:
                 chat_canvas.delete()
                 st.rerun()
 
+        if st.button('print state', key='prints_ss'):
+            st.write(st.session_state)
+
         for filename in os.listdir(TEMP_DIR):
             if filename.startswith(f'voice_message_{st.session_state.user_id}'):
                 os.remove(os.path.join(TEMP_DIR, filename))
