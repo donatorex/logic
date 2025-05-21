@@ -19,8 +19,6 @@ st.set_page_config(
 DATA_DIR = '/disk/data'
 os.makedirs(DATA_DIR, exist_ok=True)
 
-TEST_BUILD = True
-
 # disable HTTP request logging
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
@@ -165,9 +163,6 @@ if is_logged_in:
     if 'openai_client' not in st.session_state:
         st.session_state.openai_client = None
     st.logo('assets/logo_icon.png')
-
-    if TEST_BUILD:
-        st.sidebar.title('TEST BUILD')
 
     pg = st.navigation(
         [
