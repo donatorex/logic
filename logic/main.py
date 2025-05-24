@@ -573,7 +573,7 @@ class ChatbotCanvas:
                     stream = st.session_state.openai_client.chat.completions.create(
                         model=st.session_state.model,
                         messages=messages,
-                        # temperature=0.5,
+                        temperature=st.session_state.temperature,
                         stream=True
                     )
                 assistant_message_date = datetime.now()

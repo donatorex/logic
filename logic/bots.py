@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import streamlit as st
 from openai import OpenAI
 from streamlit_lottie import st_lottie
@@ -89,6 +90,24 @@ if user_info:
                     api_key=user_info[7], base_url="https://api.deepseek.com")
             else:
                 st.session_state.openai_client = OpenAI(api_key=user_info[6])
+
+            st.select_slider(
+                'Temperature:',
+                options=np.linspace(0.5, 0.75, 6),
+                format_func=lambda _: '',
+                label_visibility='collapsed',
+                key='temperature'
+            )
+
+            st.markdown(
+                """
+                <div style="display: flex; justify-content: space-between; margin: -10px 0 30px;">
+                    <span style="font-size: 14px;">Точность</span>
+                    <span style="font-size: 14px;">Креативность</span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
             st.toggle('Сохранять историю', help="""
                 GPT модель будет помнить всю историю сообщений данного бота (при этом стоимость
