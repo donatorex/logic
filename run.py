@@ -36,7 +36,7 @@ def create_database():
                 password TEXT NOT NULL,
                 register_date TIMESTAMP NOT NULL,
                 openai_api_key TEXT,
-                deepseek_api_key TEXT,
+                deepseek_api_key TEXT
             )
         """)
         cur.execute("""
