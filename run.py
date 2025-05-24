@@ -112,17 +112,11 @@ def is_logged_in():
         conn.close()
 
 
-@st.cache_data
-def load_lottie_data():
-    with open('assets/logic_animation.json', 'r') as f:
-        return json.load(f)
-
-
 def animation():
-    lottie_json = load_lottie_data()
-
-    container = st.container(height=200, border=False)
-    col1, col2, col3 = container.columns([1, 10, 1], vertical_alignment='center')
+    with open('assets/logic_animation.json', 'r') as f:
+        lottie_json = json.load(f)
+    st.container(height=200, border=False)
+    col1, col2, col3 = st.columns([1, 10, 1], vertical_alignment='center')
     with col2:
         st_lottie(lottie_json, loop=True)
 
