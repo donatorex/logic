@@ -148,13 +148,13 @@ if user_info:
     st.caption('OpenAI API key:')
     with st.container():
         col1, col2 = st.columns([8, 1])
-        col1.text_input(label='API_KEY', value=openai_api_key, disabled=True, label_visibility='collapsed')
+        col1.text_input(label='API_KEY', value=openai_api_key, disabled=True, label_visibility='collapsed', key='o_api')
         change_button_1 = col2.button("", icon=':material/edit:', key='change_openai_api_key')
 
     st.caption('DeepSeek API key:')
     with st.container():
         col1, col2 = st.columns([8, 1])
-        col1.text_input(label='API_KEY', value=deepseek_api_key, disabled=True, label_visibility='collapsed')
+        col1.text_input(label='API_KEY', value=deepseek_api_key, disabled=True, label_visibility='collapsed', key='ds_api')
         change_button_2 = col2.button("", icon=':material/edit:', key='change_deepseek_api_key')
 
     if change_button_1:
